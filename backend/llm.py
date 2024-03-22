@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Any, Awaitable, Callable, List, cast
 from anthropic import AsyncAnthropic
 from openai import AsyncOpenAI
@@ -5,12 +6,18 @@ from openai.types.chat import ChatCompletionMessageParam, ChatCompletionChunk
 
 from utils import pprint_prompt
 
-MODEL_GPT_4_VISION = "gpt-4-vision-preview"
-MODEL_CLAUDE_SONNET = "claude-3-sonnet-20240229"
-MODEL_CLAUDE_OPUS = "claude-3-opus-20240229"
+
+# Actual model versions that are passed to the LLMs and stored in our logs
+class Llm(Enum):
+    GPT_4_VISION = "gpt-4-vision-preview"
+    CLAUDE_3_SONNET = "claude-3-sonnet-20240229"
+    CLAUDE_3_OPUS = "claude-3-opus-20240229"
+    CLAUDE_3_HAIKU = "claude-3-haiku-20240307"
 
 
 # Keep in sync with frontend (lib/models.ts)
+# User-facing names for the models (for example, in the future, gpt_4_vision might
+# be backed by a different model version)
 CODE_GENERATION_MODELS = [
     "gpt_4_vision",
     "claude_3_sonnet",
@@ -25,13 +32,18 @@ async def stream_openai_response(
 ) -> str:
     client = AsyncOpenAI(api_key=api_key, base_url=base_url)
 
-    model = MODEL_GPT_4_VISION
+    model = Llm.GPT_4_VISION
 
     # Base parameters
-    params = {"model": model, "messages": messages, "stream": True, "timeout": 600}
+    params = {
+        "model": model.value,
+        "messages": messages,
+        "stream": True,
+        "timeout": 600,
+    }
 
     # Add 'max_tokens' only if the model is a GPT4 vision model
-    if model == MODEL_GPT_4_VISION:
+    if model == Llm.GPT_4_VISION:
         params["max_tokens"] = 4096
         params["temperature"] = 0
 
@@ -58,12 +70,12 @@ async def stream_claude_response(
     client = AsyncAnthropic(api_key=api_key)
 
     # Base parameters
-    model = MODEL_CLAUDE_SONNET
+    model = Llm.CLAUDE_3_SONNET
     max_tokens = 4096
     temperature = 0.0
 
     # Translate OpenAI messages to Claude messages
-    system_prompt = cast(str, messages[0]["content"])
+    system_prompt = cast(str, messages[0].get("content"))
     claude_messages = [dict(message) for message in messages[1:]]
     for message in claude_messages:
         if not isinstance(message["content"], list):
@@ -90,7 +102,7 @@ async def stream_claude_response(
 
     # Stream Claude response
     async with client.messages.stream(
-        model=model,
+        model=model.value,
         max_tokens=max_tokens,
         temperature=temperature,
         system=system_prompt,
@@ -101,6 +113,10 @@ async def stream_claude_response(
 
     # Return final message
     response = await stream.get_final_message()
+
+    # Close the Anthropic client
+    await client.close()
+
     return response.content[0].text
 
 
@@ -110,7 +126,7 @@ async def stream_claude_response_native(
     api_key: str,
     callback: Callable[[str], Awaitable[None]],
     include_thinking: bool = False,
-    model: str = MODEL_CLAUDE_OPUS,
+    model: Llm = Llm.CLAUDE_3_OPUS,
 ) -> str:
 
     client = AsyncAnthropic(api_key=api_key)
@@ -139,7 +155,7 @@ async def stream_claude_response_native(
         pprint_prompt(messages_to_send)
 
         async with client.messages.stream(
-            model=model,
+            model=model.value,
             max_tokens=max_tokens,
             temperature=temperature,
             system=system_prompt,
@@ -164,6 +180,9 @@ async def stream_claude_response_native(
         print(
             f"Token usage: Input Tokens: {response.usage.input_tokens}, Output Tokens: {response.usage.output_tokens}"
         )
+
+    # Close the Anthropic client
+    await client.close()
 
     if not response:
         raise Exception("No HTML response found in AI response")
