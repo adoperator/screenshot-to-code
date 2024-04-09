@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 // import { PromptImage } from "../../../types";
 import { toast } from "react-hot-toast";
-import { URLS } from "../urls";
+// import { URLS } from "../urls";
 import { Badge } from "./ui/badge";
 import ScreenRecorder from "./recording/ScreenRecorder";
 import { ScreenRecorderState } from "../types";
@@ -177,13 +177,13 @@ function ImageUpload({ setReferenceImages }: Props) {
         <div className="text-center text-sm text-slate-800 mt-4">
           <Badge>New!</Badge> Upload a screen recording (.mp4, .mov) or record
           your screen to clone a whole app (experimental).{" "}
-          <a
-            className="underline"
-            href={URLS["intro-to-video"]}
-            target="_blank"
-          >
-            Learn more.
-          </a>
+          {/*<a*/}
+          {/*  className="underline"*/}
+          {/*  href={URLS["intro-to-video"]}*/}
+          {/*  target="_blank"*/}
+          {/*>*/}
+          {/*  Learn more.*/}
+          {/*</a>*/}
         </div>
       )}
       <ScreenRecorder
