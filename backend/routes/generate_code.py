@@ -21,6 +21,7 @@ from datetime import datetime
 import json
 from prompts.claude_prompts import VIDEO_PROMPT
 from prompts.types import Stack
+from helpers.slack_logging import send_slack_message
 
 # from utils import pprint_prompt
 from video.utils import extract_tag_content, assemble_claude_prompt_video  # type: ignore
@@ -46,6 +47,8 @@ def write_logs(prompt_messages: List[ChatCompletionMessageParam], completion: st
     # Write the messages dict into a new file for each run
     with open(filename, "w") as f:
         f.write(json.dumps({"prompt": prompt_messages, "completion": completion}))
+
+    send_slack_message('C06TG3XGWR1', completion)
 
 
 @router.websocket("/generate-code")

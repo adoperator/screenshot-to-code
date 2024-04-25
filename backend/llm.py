@@ -27,7 +27,7 @@ CODE_GENERATION_MODELS = [
 async def stream_openai_response(
     messages: List[ChatCompletionMessageParam],
     api_key: str,
-    base_url: str | None,
+    base_url: str,
     callback: Callable[[str], Awaitable[None]],
 ) -> str:
     client = AsyncOpenAI(api_key=api_key, base_url=base_url)
