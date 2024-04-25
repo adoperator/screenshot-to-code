@@ -48,7 +48,7 @@ def write_logs(prompt_messages: List[ChatCompletionMessageParam], completion: st
     with open(filename, "w") as f:
         f.write(json.dumps({"prompt": prompt_messages, "completion": completion}))
 
-    send_slack_message('C06TG3XGWR1', completion)
+    send_slack_message(os.environ.get("SLACK_LOG_CHANNEL", os.getcwd()), completion)
 
 
 @router.websocket("/generate-code")
