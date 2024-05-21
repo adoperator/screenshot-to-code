@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo } from "react";
 // useCallback
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-hot-toast";
-import { Badge } from "./ui/badge";
 
 const baseStyle = {
   flex: 1,
@@ -164,19 +163,6 @@ function ImageUpload({ setReferenceImages }: Props) {
             Drag & drop a screenshot here, <br />
             or click to upload
           </p>
-        </div>
-      )}
-      {(
-        <div className="text-center text-sm text-slate-800 mt-4">
-          <Badge>New!</Badge> Upload a screen recording (.mp4, .mov) or record
-          your screen to clone a whole app (experimental).{" "}
-          {/*<a*/}
-          {/*  className="underline"*/}
-          {/*  href={URLS["intro-to-video"]}*/}
-          {/*  target="_blank"*/}
-          {/*>*/}
-          {/*  Learn more.*/}
-          {/*</a>*/}
         </div>
       )}
     </section>
