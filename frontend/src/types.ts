@@ -24,12 +24,6 @@ export enum AppState {
   CODE_READY = "CODE_READY",
 }
 
-export enum ScreenRecorderState {
-  INITIAL = "initial",
-  RECORDING = "recording",
-  FINISHED = "finished",
-}
-
 export interface CodeGenerationParams {
   generationType: "create" | "update";
   inputMode: "image" | "video";

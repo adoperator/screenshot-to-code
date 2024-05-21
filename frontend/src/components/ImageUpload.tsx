@@ -3,8 +3,6 @@ import { useState, useEffect, useMemo } from "react";
 import { useDropzone } from "react-dropzone";
 import { toast } from "react-hot-toast";
 import { Badge } from "./ui/badge";
-import ScreenRecorder from "./recording/ScreenRecorder";
-import { ScreenRecorderState } from "../types";
 
 const baseStyle = {
   flex: 1,
@@ -61,9 +59,6 @@ interface Props {
 
 function ImageUpload({ setReferenceImages }: Props) {
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  // TODO: Switch to Zustand
-  const [screenRecorderState, setScreenRecorderState] =
-    useState<ScreenRecorderState>(ScreenRecorderState.INITIAL);
 
   const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } =
     useDropzone({
@@ -161,7 +156,7 @@ function ImageUpload({ setReferenceImages }: Props) {
 
   return (
     <section className="container">
-      {screenRecorderState === ScreenRecorderState.INITIAL && (
+      {(
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         <div {...getRootProps({ style: style as any })}>
           <input {...getInputProps()} />
@@ -171,7 +166,7 @@ function ImageUpload({ setReferenceImages }: Props) {
           </p>
         </div>
       )}
-      {screenRecorderState === ScreenRecorderState.INITIAL && (
+      {(
         <div className="text-center text-sm text-slate-800 mt-4">
           <Badge>New!</Badge> Upload a screen recording (.mp4, .mov) or record
           your screen to clone a whole app (experimental).{" "}
@@ -184,11 +179,6 @@ function ImageUpload({ setReferenceImages }: Props) {
           {/*</a>*/}
         </div>
       )}
-      <ScreenRecorder
-        screenRecorderState={screenRecorderState}
-        setScreenRecorderState={setScreenRecorderState}
-        generateCode={setReferenceImages}
-      />
     </section>
   );
 }
