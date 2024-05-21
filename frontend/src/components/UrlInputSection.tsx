@@ -5,23 +5,14 @@ import { Input } from "./ui/input";
 import { toast } from "react-hot-toast";
 
 interface Props {
-  screenshotOneApiKey: string | null;
   doCreate: (urls: string[], inputMode: "image" | "video") => void;
 }
 
-export function UrlInputSection({ doCreate, screenshotOneApiKey }: Props) {
+export function UrlInputSection({ doCreate }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [referenceUrl, setReferenceUrl] = useState("");
 
   async function takeScreenshot() {
-    if (!screenshotOneApiKey) {
-      toast.error(
-        "Please add a ScreenshotOne API key in the Settings dialog. This is optional - you can also drag/drop and upload images directly.",
-        { duration: 8000 }
-      );
-      return;
-    }
-
     if (!referenceUrl) {
       toast.error("Please enter a URL");
       return;
@@ -33,8 +24,7 @@ export function UrlInputSection({ doCreate, screenshotOneApiKey }: Props) {
         const response = await fetch(`${HTTP_BACKEND_URL}/api/screenshot`, {
           method: "POST",
           body: JSON.stringify({
-            url: referenceUrl,
-            apiKey: screenshotOneApiKey,
+            url: referenceUrl
           }),
           headers: {
             "Content-Type": "application/json",

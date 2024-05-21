@@ -17,7 +17,6 @@ import { Switch } from "./components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
-// import SettingsDialog from "./components/SettingsDialog";
 import { AppState, CodeGenerationParams, EditorTheme, Settings } from "./types";
 import { IS_RUNNING_ON_CLOUD } from "./config";
 import { PicoBadge } from "./components/PicoBadge";
@@ -58,7 +57,6 @@ function App() {
     {
       openAiApiKey: null,
       openAiBaseURL: null,
-      screenshotOneApiKey: null,
       isImageGenerationEnabled: true,
       editorTheme: EditorTheme.COBALT,
       generatedCodeConfig: Stack.HTML_TAILWIND,
@@ -353,7 +351,6 @@ function App() {
         <div className="flex grow flex-col gap-y-2 overflow-y-auto border-r border-gray-200 bg-white px-6 dark:bg-zinc-950 dark:text-white">
           <div className="flex items-center justify-between mt-10 mb-2">
             <h1 className="text-2xl ">Screenshot to Code</h1>
-            {/*<SettingsDialog settings={settings} setSettings={setSettings} />*/}
           </div>
 
           <OutputSettingsSection
@@ -537,7 +534,6 @@ function App() {
             <ImageUpload setReferenceImages={doCreate} />
             <UrlInputSection
               doCreate={doCreate}
-              screenshotOneApiKey={settings.screenshotOneApiKey}
             />
             <ImportCodeSection importFromCode={importFromCode} />
           </div>
